@@ -89,6 +89,7 @@ Options:
   --portal-iface IFACE            On RHEL 9, interface used to reach Infoblox Portal
   --non-portal-ifaces LIST        Comma-separated interfaces that must not install a default route
   --dns-resolver IP               Ubuntu resolver to write to /etc/resolv.conf (default: 8.8.8.8)
+  --restart-network		  Restart the network after making changes (console only!)
   --allow-reboot                  Permit reboot during execute/prep phase
   --force                         Continue despite non-fatal warnings where possible
   -h, --help                      Show this help
@@ -171,6 +172,8 @@ parse_args() {
         DNS_RESOLVER=${2:-}; shift 2 ;;
       --allow-reboot)
         ALLOW_REBOOT="true"; shift ;;
+      --restart-network)
+	      RESTART_NETWORK="true"; shift ;;
       --force)
         FORCE="true"; shift ;;
       -h|--help)
@@ -328,8 +331,11 @@ EOF
     run_cmd "Remove any legacy GATEWAY line from /etc/sysconfig/network if present" \
       "if [[ -f /etc/sysconfig/network ]]; then sed -i '/^GATEWAY=/d' /etc/sysconfig/network; fi"
 
-    run_cmd "Restart NetworkManager networking" \
-      "nmcli networking off && nmcli networking on"
+    if [[ "$RESTART_NETWORK" == "true" ]]; then
+        run_cmd "Restart NetworkManager networking" \
+          "nmcli networking off && nmcli networking on"
+    fi
+
   fi
 
   if [[ "$MODE" == "plan" ]]; then
