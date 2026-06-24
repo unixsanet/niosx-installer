@@ -427,7 +427,7 @@ EOF
   fi
 }
 
-build_download_niox_installer() {
+build_download_niosx_installer() {
   if [[ "$DOWNLOAD" == "true" ]]; then
     wget https://s3.amazonaws.com/ib-noa-prod.csp.infoblox.com/niosx_installer_v2.2.2.sh
   fi
