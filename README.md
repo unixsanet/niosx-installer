@@ -1,13 +1,13 @@
 # niosx-installer
 Consolidated NIOS-X installation script
 
-# Purpose:
+## Purpose:
 Determine and optionally execute the appropriate host-preparation and NIOS-X installation commands 
 for a bare-metal Linux server, based on the Infoblox "NIOS-X Bare-Metal" deployment guide.  This
 script will detect and ensure support OSes (currently RHEL up-to 8.9, 9.6 and Ubuntu 22.04, 24.04),
 perform various validations before making any changes, and default to a dry-run/plan mode.
 
-# Notes:
+## Notes:
   - This script does NOT download the Infoblox installer automatically, but can do so with the
     flag --download.  The Infoblox documentation requires downloading the NIOS-X install script
     from the Infoblox Portal first. Pass that local file path with --install-script during the
@@ -16,7 +16,8 @@ perform various validations before making any changes, and default to a dry-run/
   - Some network changes can interrupt remote sessions, so it is recommended to only use the
     --restart-network flag when logged in from the console.
 
-# Usage:
+## Usage:
+```
 $SCRIPT_NAME [options]
 
 Options:
@@ -36,14 +37,16 @@ Options:
   --download                      Download the official NIOS-X installer from Infoblox
   --force                         Continue despite non-fatal warnings where possible
   -h, --help                      Show this help
+```
 
-Recommended workflow:
+### Recommended workflow:
   1. Run in plan mode and review the generated commands.
   2. Run execute/prep.
   3. Reboot if indicated by the script or guide.
   4. Run execute/install.
 
-# Examples:
+## Examples:
+```
 1) Review all prep + install commands for this host
    ./niosx_prepare_and_install.sh \
      --phase all \
@@ -67,4 +70,4 @@ Recommended workflow:
      --mode execute \
      --phase reconfigure-network \
      --install-script /root/niosx_installer_v2.2.2.sh
-   
+```
