@@ -63,6 +63,7 @@ NON_PORTAL_IFACES=""
 DNS_RESOLVER="8.8.8.8"
 RESTART_NETWORK="false"
 ALLOW_REBOOT="false"
+DOWNLOAD="false"
 FORCE="false"
 
 OS_FAMILY=""
@@ -80,7 +81,7 @@ Usage:
 
 Options:
   --mode plan|execute             Default: plan
-  --phase prep|install|all|reconfigure-network
+  --phase prep|download|install|all|reconfigure-network
                                   Default: all
   --join-token TOKEN              Required for install phase
   --install-script PATH           Path to downloaded Infoblox NIOS-X install script
@@ -90,8 +91,9 @@ Options:
   --portal-iface IFACE            On RHEL 9, interface used to reach Infoblox Portal
   --non-portal-ifaces LIST        Comma-separated interfaces that must not install a default route
   --dns-resolver IP               Ubuntu resolver to write to /etc/resolv.conf (default: 8.8.8.8)
-  --restart-network		  Restart the network after making changes (console only!)
+  --restart-network		          Restart the network after making changes (console only!)
   --allow-reboot                  Permit reboot during execute/prep phase
+  --download                      Download the official NIOS-X installer from Infoblox
   --force                         Continue despite non-fatal warnings where possible
   -h, --help                      Show this help
 
@@ -143,7 +145,7 @@ validate_ipv4() {
 validate_mode_phase() {
   [[ "$MODE" == "plan" || "$MODE" == "execute" ]] || die "--mode must be plan or execute"
   case "$PHASE" in
-    prep|install|all|reconfigure-network) ;;
+    prep|download|install|all|reconfigure-network) ;;
     *) die "--phase must be prep, install, all, or reconfigure-network" ;;
   esac
 }
@@ -175,6 +177,8 @@ parse_args() {
         ALLOW_REBOOT="true"; shift ;;
       --restart-network)
 	      RESTART_NETWORK="true"; shift ;;
+	  --download)
+	  	  DOWNLOAD="true"; shift ;;
       --force)
         FORCE="true"; shift ;;
       -h|--help)
@@ -423,6 +427,12 @@ EOF
   fi
 }
 
+build_download_niox_installer() {
+  if [[ "$DOWNLOAD" == "true" ]]; then
+    wget https://s3.amazonaws.com/ib-noa-prod.csp.infoblox.com/niosx_installer_v2.2.2.sh
+  fi
+}
+
 build_install_phase() {
   preflight_install_inputs
 
@@ -482,6 +492,7 @@ main() {
       else
         build_ubuntu_prep
       fi
+	  build_download_niosx_installer
       ;;
     install)
       build_install_phase
@@ -492,6 +503,7 @@ main() {
       else
         build_ubuntu_prep
       fi
+	  build_download_niosx_installer
       printf '\n# After the documented reboot, run the installation section below.\n'
       build_install_phase
       ;;
