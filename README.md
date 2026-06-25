@@ -22,7 +22,7 @@ $SCRIPT_NAME [options]
 
 Options:
   --mode plan|execute             Default: plan
-  --phase prep|download|install|all|reconfigure-network
+  --phase prep|install|all|reconfigure-network
                                   Default: all
   --join-token TOKEN              Required for install phase
   --install-script PATH           Path to downloaded Infoblox NIOS-X install script

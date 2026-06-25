@@ -52,7 +52,7 @@ set -euo pipefail
 
 SCRIPT_NAME=$(basename "$0")
 MODE="plan"                     # plan | execute
-PHASE="all"                     # prep | install | all | reconfigure-network
+PHASE="prep"                     # prep | install | all | reconfigure-network
 JOIN_TOKEN=""
 INSTALL_SCRIPT=""
 PROXY_URL=""
@@ -81,8 +81,8 @@ Usage:
 
 Options:
   --mode plan|execute             Default: plan
-  --phase prep|download|install|all|reconfigure-network
-                                  Default: all
+  --phase prep|install|all|reconfigure-network
+                                  Default: prep
   --join-token TOKEN              Required for install phase
   --install-script PATH           Path to downloaded Infoblox NIOS-X install script
   --proxy URL                     Proxy for NIOS-X installer, e.g. http://proxy:8080
@@ -91,7 +91,7 @@ Options:
   --portal-iface IFACE            On RHEL 9, interface used to reach Infoblox Portal
   --non-portal-ifaces LIST        Comma-separated interfaces that must not install a default route
   --dns-resolver IP               Ubuntu resolver to write to /etc/resolv.conf (default: 8.8.8.8)
-  --restart-network		          Restart the network after making changes (console only!)
+  --restart-network		            Restart the network after making changes (console only!)
   --allow-reboot                  Permit reboot during execute/prep phase
   --download                      Download the official NIOS-X installer from Infoblox
   --force                         Continue despite non-fatal warnings where possible
@@ -145,7 +145,7 @@ validate_ipv4() {
 validate_mode_phase() {
   [[ "$MODE" == "plan" || "$MODE" == "execute" ]] || die "--mode must be plan or execute"
   case "$PHASE" in
-    prep|download|install|all|reconfigure-network) ;;
+    prep|install|all|reconfigure-network) ;;
     *) die "--phase must be prep, install, all, or reconfigure-network" ;;
   esac
 }
@@ -492,7 +492,7 @@ main() {
       else
         build_ubuntu_prep
       fi
-	  build_download_niosx_installer
+	    build_download_niosx_installer
       ;;
     install)
       build_install_phase
@@ -503,7 +503,7 @@ main() {
       else
         build_ubuntu_prep
       fi
-	  build_download_niosx_installer
+	    build_download_niosx_installer
       printf '\n# After the documented reboot, run the installation section below.\n'
       build_install_phase
       ;;
