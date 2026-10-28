@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+# Last update: 2026/10/28
 # niosx_prepare_and_install.sh
 #
 # Purpose:
